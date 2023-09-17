@@ -1,9 +1,10 @@
-var express = require("express");
-var cors = require("cors");
-var app = express();
-var mysql = require("mysql2");
+const express = require("express");
+const cors = require("cors");
+const app = express();
+const mysql = require("mysql2");
 require("dotenv").config();
-const pool = mysql.createConnection({
+const port = 5000;
+const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -13,12 +14,11 @@ const pool = mysql.createConnection({
 app.use(cors());
 
 app.get("/users", (req, res) => {
-  pool.query("SELECT * FROM attractions", (req, rows) => {
- if (err) return res.status(500).json({ message: "Not excute" });
-    res.json({rows});
-  });
-  res.json({message: "not connect sql"})
+  pool.query("SELECT * FROM attractions", (req, result) => {   
+    res.status(200).json({ result });
+  })
+  
 });
-app.listen(5000, () => {
-  console.log("web server listening 5000");
+app.listen(port, () => {
+  console.log(`Server Listen on port ${port}`);
 });
